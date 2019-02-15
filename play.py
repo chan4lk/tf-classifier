@@ -1,5 +1,15 @@
 import cv2 as cv
 import math
+import os
+
+
+def save_lights(rects, videoName, frame):
+    imagePath = './images/lights/%s' % videoName
+    if not os.path.exists(imagePath):
+        os.makedirs(imagePath)
+    for cnt, img in enumerate(rects):
+        cv.imwrite(imagePath + '/frame%d_%d.jpg' % (frame, cnt), img)
+
 
 def find_lghts(light, black, org, cr_h, cr_w):
     contours_light, _ = cv.findContours(
@@ -32,7 +42,7 @@ def find_lghts(light, black, org, cr_h, cr_w):
     return (output, rects)
 
 
-def draw_frame(img):
+def draw_frame(img, videoName, frame):
     h, w, _ = img.shape
     cropped_img = img.copy()
     cropped_img = img[math.floor(h/4):math.floor(h*3/4)]
@@ -43,22 +53,26 @@ def draw_frame(img):
     _, gb = cv.threshold(gray, 170, 255, cv.THRESH_BINARY)
     _, black_shape = cv.threshold(gray, 10, 255, cv.THRESH_BINARY_INV)
     output, rects = find_lghts(gb, black_shape, cropped_img, cr_h, cr_w)
-
+    save_lights(rects, videoName, frame)
     return output
 
 
-source = './videos/video-2.mp4'
-vidcap = cv.VideoCapture(source)
+videoName = 'video-4'
 
+source = './videos/%s.mp4' % videoName
+vidcap = cv.VideoCapture(source)
+frame = 0
 
 while True:
     success, image = vidcap.read()
 
     if not success:
         vidcap = cv.VideoCapture(source)
+        frame = 0
         continue
 
-    cv.imshow('video', draw_frame(image))
+    cv.imshow('video', draw_frame(image, videoName, frame))
+    frame = frame + 1
 
     key = cv.waitKey(25)
     if key == 27:

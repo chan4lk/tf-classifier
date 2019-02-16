@@ -13,6 +13,8 @@ from keras.models import load_model
 
 min_w = 32
 min_h = 32
+black_thresh = 10
+white_thresh = 170
 
 
 def pre_process(img):
@@ -144,14 +146,19 @@ def draw_frame(img, videoName, frame, model):
     cr_h, cr_w, _ = cropped_img.shape
 
     gray = cv.cvtColor(cropped_img, cv.COLOR_BGR2GRAY)
-    _, gb = cv.threshold(gray, 170, 255, cv.THRESH_BINARY)
-    _, black_shape = cv.threshold(gray, 10, 255, cv.THRESH_BINARY_INV)
+    _, gb = cv.threshold(gray, white_thresh, 255, cv.THRESH_BINARY)
+    _, black_shape = cv.threshold(
+        gray, black_thresh, 255, cv.THRESH_BINARY_INV)
     output, rects = find_lghts(gb, black_shape, cropped_img, cr_h, cr_w, model)
     save_lights(rects, videoName, frame)
     return output
 
 
 videoName = 'video-2'
+black_thresh = 10
+white_thresh = 170
+# videoName = 'video-1'; black_thresh = 56; white_thresh = 170
+
 model = train('video-2')
 source = './videos/%s.mp4' % videoName
 vidcap = cv.VideoCapture(source)

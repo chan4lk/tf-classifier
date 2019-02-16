@@ -139,8 +139,8 @@ def find_lghts(light, black, org, cr_h, cr_w, model):
 def draw_frame(img, videoName, frame, model):
     h, w, _ = img.shape
     cropped_img = img.copy()
-    #cropped_img = img[math.floor(h/4):math.floor(h*3/4)]
-    #cropped_img = cropped_img[:, math.floor(w/8):math.floor(w/2)]
+    cropped_img = img[math.floor(h/4):math.floor(h*3/4)]
+    cropped_img = cropped_img[:, math.floor(w/8):math.floor(w/2)]
     cr_h, cr_w, _ = cropped_img.shape
 
     gray = cv.cvtColor(cropped_img, cv.COLOR_BGR2GRAY)

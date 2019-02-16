@@ -57,7 +57,7 @@ def draw_frame(img, videoName, frame):
     return output
 
 
-videoName = 'video-4'
+videoName = 'video-2'
 
 source = './videos/%s.mp4' % videoName
 vidcap = cv.VideoCapture(source)
